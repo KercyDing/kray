@@ -1,0 +1,8 @@
+CompileFlags:
+  CompilationDatabase: "build"
+  Add:
+    - -Iinclude
+    - -Isrc
+
+Index:
+  Background: Build

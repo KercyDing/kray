@@ -1,0 +1,15 @@
+Language: Cpp
+BasedOnStyle: Google
+Standard: Auto
+
+ColumnLimit: 100
+IndentWidth: 4
+UseTab: Never
+PointerAlignment: Right
+AccessModifierOffset: -4
+BreakBeforeBraces: Attach
+MaxEmptyLinesToKeep: 1
+AllowShortFunctionsOnASingleLine: InlineOnly
+BinPackArguments: false
+InsertNewlineAtEOF: true
+BreakBeforeBinaryOperators: NonAssignment

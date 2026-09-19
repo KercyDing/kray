@@ -16,6 +16,7 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 add_executable(
     kray
     src/main.cpp
+    src/math
 )
 
 target_compile_options(

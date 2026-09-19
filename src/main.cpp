@@ -2,21 +2,21 @@
 #include <print>
 #include <ranges>
 
+#include "math/vec3.hpp"
+
 namespace constants {
 constexpr int width = 800;
 constexpr int height = 450;
 }  // namespace constants
 
-struct Color {
-    double r;
-    double g;
-    double b;
-};
-
 int to_byte(double x) {
     x = std::clamp(x, 0.0, 1.0);
 
     return static_cast<int>(255.999 * x);
+}
+
+void write_color(std::ofstream &out, const Color &color) {
+    std::println(out, "{} {} {}", to_byte(color.x()), to_byte(color.y()), to_byte(color.z()));
 }
 
 int main() {
@@ -39,14 +39,9 @@ int main() {
         const double u = static_cast<double>(x) / (width - 1);
         const double v = static_cast<double>(y) / (height - 1);
 
-        const Color color{
-            .r = u,
-            .g = v,
-            .b = 0.25,
-        };
+        const Color color{u, v, 0.25};
 
-        std::println(
-            out, "{} {} {}", to_byte(color.r), to_byte(color.g), to_byte(color.b));
+        write_color(out, color);
     }
 
     return 0;

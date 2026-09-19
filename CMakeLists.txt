@@ -13,11 +13,16 @@ set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
-add_executable(
-    kray
-    src/main.cpp
-    src/math
+file(GLOB_RECURSE KRAY_SOURCES CONFIGURE_DEPENDS
+    src/*.cpp
+    src/*.cc
+    src/*.h
+    src/*.hpp
+    include/*.h
+    include/*.hpp
 )
+
+add_executable(kray ${KRAY_SOURCES})
 
 target_compile_options(
     kray
@@ -26,3 +31,22 @@ target_compile_options(
     -Wextra
     -Wpedantic
 )
+
+find_program(CLANG_FORMAT NAMES clang-format)
+
+if(CLANG_FORMAT)
+    add_custom_target(
+        format
+        COMMAND ${CLANG_FORMAT} -i ${KRAY_SOURCES}
+        WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
+        COMMENT "Formatting sources with clang-format"
+        VERBATIM
+    )
+else()
+    add_custom_target(
+        format
+        COMMAND ${CMAKE_COMMAND} -E echo "clang-format not found in PATH"
+        COMMAND ${CMAKE_COMMAND} -E false
+        VERBATIM
+    )
+endif()

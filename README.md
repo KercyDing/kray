@@ -1,25 +1,31 @@
 # kray
 
-A C++ project built with CMake.
+Kray built with C++.
 
 ## Build
 
 Configure:
 
 ```bash
-cmake -B build -G Ninja
+cmake --preset default
 ```
 
 Build:
 
 ```bash
-cmake --build build
+cmake --build --preset default
 ```
 
 Run:
 
 ```bash
 ./build/kray
+```
+
+Format:
+
+```bash
+cmake --build --preset default --target format
 ```
 
 ## Using Only
@@ -30,7 +36,8 @@ If [Only](https://github.com/onlyjs/only) is installed, the same workflow is ava
 only config
 only build
 only run
+only fmt
 only clean
 ```
 
-`build` runs `config` first, and `run` builds the project first when needed.
+`config` prepares the build directory; run it before `build`, `run`, or `fmt`.

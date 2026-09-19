@@ -18,6 +18,12 @@ run():
     cmake --build --preset default -- --quiet
     ./build/kray
 
+[help] Format source files with clang-format.
+[pass] Source files formatted.
+[fail] Formatting failed.
+fmt():
+    cmake --build --preset default --target format
+
 [help] Clean build outputs.
 [pass] Build outputs cleaned.
 [fail] Cleaning failed.

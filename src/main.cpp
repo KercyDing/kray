@@ -3,8 +3,10 @@
 #include <limits>
 #include <print>
 #include <ranges>
+#include <span>
 
 #include "geometry/sphere.hpp"
+#include "geometry/world.hpp"
 #include "math/ray.hpp"
 #include "math/vec3.hpp"
 
@@ -33,13 +35,8 @@ void write_color(std::ofstream &out, const Color &color) {
 }
 
 [[nodiscard]]
-Color ray_color(const Ray &ray) {
-    const Sphere sphere{
-        .center = Point3{0.0, 0.0, -1.0},
-        .radius = 0.5,
-    };
-
-    if (const auto record = hit(sphere, ray, 0.001, std::numeric_limits<double>::infinity())) {
+Color ray_color(const Ray &ray, std::span<const Sphere> world) {
+    if (const auto record = hit(world, ray, 0.001, std::numeric_limits<double>::infinity())) {
         return 0.5 * (record->normal + Color{1.0, 1.0, 1.0});
     }
 
@@ -92,6 +89,17 @@ int main() {
 
     std::print(out, "P3\n{} {}\n255\n", width, height);
 
+    const std::array world{
+        Sphere{
+            .center = Point3{0.0, 0.0, -1.0},
+            .radius = 0.5,
+        },
+        Sphere{
+            .center = Point3{0.0, -100.5, -1.0},
+            .radius = 100.0,
+        },
+    };
+
     for (auto [y, x] : pixels) {
         const Point3 pixel_center = pixel00 + x * pixel_delta_u + y * pixel_delta_v;
 
@@ -102,7 +110,7 @@ int main() {
             ray_direction,
         };
 
-        write_color(out, ray_color(ray));
+        write_color(out, ray_color(ray, world));
     }
 
     return 0;

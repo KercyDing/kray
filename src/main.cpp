@@ -2,7 +2,6 @@
 #include <fstream>
 #include <limits>
 #include <print>
-#include <ranges>
 #include <span>
 
 #include "geometry/sphere.hpp"
@@ -48,7 +47,6 @@ Color ray_color(const Ray &ray, std::span<const Sphere> world) {
 }
 
 int main() {
-    // ========== Draw PPM ==========
     int width = constants::width;
     int height = constants::height;
     double viewport_width = constants::viewport_width;
@@ -77,9 +75,6 @@ int main() {
 
     const Point3 pixel00 = viewport_upper_left + 0.5 * (pixel_delta_u + pixel_delta_v);
 
-    const auto pixels =
-        std::views::cartesian_product(std::views::iota(0, height), std::views::iota(0, width));
-
     std::ofstream out{"image.ppm"};
 
     if (!out) {
@@ -100,17 +95,19 @@ int main() {
         },
     };
 
-    for (auto [y, x] : pixels) {
-        const Point3 pixel_center = pixel00 + x * pixel_delta_u + y * pixel_delta_v;
+    for (int y = 0; y < height; ++y) {
+        for (int x = 0; x < width; ++x) {
+            const Point3 pixel_center = pixel00 + x * pixel_delta_u + y * pixel_delta_v;
 
-        const Vec3 ray_direction = pixel_center - camera_center;
+            const Vec3 ray_direction = pixel_center - camera_center;
 
-        const Ray ray{
-            camera_center,
-            ray_direction,
-        };
+            const Ray ray{
+                camera_center,
+                ray_direction,
+            };
 
-        write_color(out, ray_color(ray, world));
+            write_color(out, ray_color(ray, world));
+        }
     }
 
     return 0;

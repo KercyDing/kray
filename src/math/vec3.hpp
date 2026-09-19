@@ -79,5 +79,14 @@ private:
     return a.x() * b.x() + a.y() * b.y() + a.z() * b.z();
 }
 
+[[nodiscard]] constexpr Vec3 lerp(const Vec3 &a, const Vec3 &b, double t) {
+    return (1.0 - t) * a + t * b;
+}
+
+[[nodiscard]]
+inline Vec3 unit_vector(const Vec3 &v) {
+    return v / v.length();
+}
+
 using Point3 = Vec3;
 using Color = Vec3;

@@ -1,4 +1,5 @@
 #include <algorithm>
+#include <cmath>
 #include <fstream>
 #include <print>
 #include <ranges>
@@ -31,12 +32,54 @@ void write_color(std::ofstream &out, const Color &color) {
 }
 
 [[nodiscard]]
+double hit_sphere(const Point3 &center, double radius, const Ray &ray) {
+    const Vec3 oc = ray.origin() - center;
+
+    const double a = dot(ray.direction(), ray.direction());
+    const double half_b = dot(oc, ray.direction());
+    const double c = dot(oc, oc) - radius * radius;
+
+    const double discriminant = half_b * half_b - a * c;
+
+    if (discriminant < 0.0) {
+        return -1.0;
+    }
+
+    const double sqrt_d = std::sqrt(discriminant);
+
+    const double t1 = (-half_b - sqrt_d) / a;
+    const double t2 = (-half_b + sqrt_d) / a;
+
+    if (t1 >= 0.0) {
+        return t1;
+    }
+
+    if (t2 >= 0.0) {
+        return t2;
+    }
+
+    return -1.0;
+}
+
+[[nodiscard]]
 Color ray_color(const Ray &ray) {
+    const Point3 sphere_center{0.0, 0.0, -1.0};
+
+    const double t = hit_sphere(sphere_center, 0.5, ray);
+
+    if (t >= 0.0) {
+        const Point3 p = ray.at(t);
+
+        const Vec3 normal = unit_vector(p - sphere_center);
+
+        return 0.5 * (normal + Color{1.0, 1.0, 1.0});
+    }
+
     const Vec3 direction = unit_vector(ray.direction());
 
-    const double t = 0.5 * (direction.y() + 1.0);
+    const double a = 0.5 * (direction.y() + 1.0);
 
-    return lerp(Color{1.0, 1.0, 1.0}, Color{0.5, 0.7, 1.0}, t);
+    return lerp(Color{1.0, 1.0, 1.0}, Color{0.5, 0.7, 1.0}, a);
 }
 
 int main() {

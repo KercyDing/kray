@@ -24,6 +24,8 @@ file(GLOB_RECURSE KRAY_SOURCES CONFIGURE_DEPENDS
 
 add_executable(kray ${KRAY_SOURCES})
 
+target_include_directories(kray PRIVATE include)
+
 target_compile_options(
     kray
     PRIVATE

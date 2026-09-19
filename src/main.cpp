@@ -2,6 +2,7 @@
 #include <print>
 #include <ranges>
 
+#include "math/ray.hpp"
 #include "math/vec3.hpp"
 
 namespace constants {
@@ -20,6 +21,7 @@ void write_color(std::ofstream &out, const Color &color) {
 }
 
 int main() {
+    // ========== Draw PPM ==========
     int width = constants::width;
     int height = constants::height;
 
@@ -43,6 +45,16 @@ int main() {
 
         write_color(out, color);
     }
+
+    // ========== Ray Test ==========
+    const Ray ray{
+        Point3{1.0, 2.0, 3.0},
+        Vec3{1.0, 1.0, 1.0},
+    };
+
+    const Point3 p = ray.at(2.0);
+
+    std::println("({}, {}, {})", p.x(), p.y(), p.z());
 
     return 0;
 }

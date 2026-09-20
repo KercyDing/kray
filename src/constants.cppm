@@ -17,4 +17,4 @@ export namespace constants {
 
     constexpr int max_depth = 16;
     constexpr int samples_per_pixel = 32;
-};  // namespace constants
+}; // namespace constants

@@ -40,4 +40,5 @@ only fmt
 only clean
 ```
 
-`config` prepares the build directory; run it before `build`, `run`, or `fmt`.
+`build`, `run`, and `fmt` depend on `config`, so they configure the build directory themselves and
+work on a clean checkout. Run `only config` alone to configure without building.

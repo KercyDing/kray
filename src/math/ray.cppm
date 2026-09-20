@@ -1,8 +1,8 @@
-#pragma once
+export module math.ray;
 
-#include "vec3.hpp"
+export import math.vec3;
 
-class Ray {
+export class Ray {
 public:
     constexpr Ray() = default;
 

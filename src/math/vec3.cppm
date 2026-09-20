@@ -1,8 +1,10 @@
-#pragma once
+module;
 
 #include <cmath>
 
-class Vec3 {
+export module math.vec3;
+
+export class Vec3 {
 public:
     constexpr Vec3() = default;
 
@@ -50,43 +52,50 @@ private:
     double e_[3]{0.0, 0.0, 0.0};
 };
 
-[[nodiscard]] constexpr Vec3 operator+(Vec3 lhs, const Vec3 &rhs) {
+export [[nodiscard]]
+constexpr Vec3 operator+(Vec3 lhs, const Vec3 &rhs) {
     lhs += rhs;
     return lhs;
 }
 
-[[nodiscard]] constexpr Vec3 operator-(Vec3 lhs, const Vec3 &rhs) {
+export [[nodiscard]]
+constexpr Vec3 operator-(Vec3 lhs, const Vec3 &rhs) {
     lhs -= rhs;
     return lhs;
 }
 
-[[nodiscard]] constexpr Vec3 operator*(Vec3 v, double t) {
+export [[nodiscard]]
+constexpr Vec3 operator*(Vec3 v, double t) {
     v *= t;
     return v;
 }
 
-[[nodiscard]] constexpr Vec3 operator*(double t, Vec3 v) {
+export [[nodiscard]]
+constexpr Vec3 operator*(double t, Vec3 v) {
     v *= t;
     return v;
 }
 
-[[nodiscard]] constexpr Vec3 operator/(Vec3 v, double t) {
+export [[nodiscard]]
+constexpr Vec3 operator/(Vec3 v, double t) {
     v /= t;
     return v;
 }
 
-[[nodiscard]] constexpr double dot(const Vec3 &a, const Vec3 &b) {
+export [[nodiscard]]
+constexpr double dot(const Vec3 &a, const Vec3 &b) {
     return a.x() * b.x() + a.y() * b.y() + a.z() * b.z();
 }
 
-[[nodiscard]] constexpr Vec3 lerp(const Vec3 &a, const Vec3 &b, double t) {
+export [[nodiscard]]
+constexpr Vec3 lerp(const Vec3 &a, const Vec3 &b, double t) {
     return (1.0 - t) * a + t * b;
 }
 
-[[nodiscard]]
-inline Vec3 unit_vector(const Vec3 &v) {
+export [[nodiscard]]
+Vec3 unit_vector(const Vec3 &v) {
     return v / v.length();
 }
 
-using Point3 = Vec3;
-using Color = Vec3;
+export using Point3 = Vec3;
+export using Color = Vec3;

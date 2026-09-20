@@ -1,8 +1,9 @@
-#pragma once
+export module geometry.hit_record;
 
-#include "math/ray.hpp"
+export import math.vec3;
+export import math.ray;
 
-struct HitRecord {
+export struct HitRecord {
     Point3 point{};
     Vec3 normal{};
     double t{};

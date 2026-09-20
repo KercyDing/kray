@@ -9,23 +9,29 @@ config():
 [help] Build the project.
 [pass] Build complete.
 [fail] Build failed.
-build():
+build() & config:
     cmake --build --preset default
 
 [help] Run the built program.
 [fail] Program failed.
-run():
-    cmake --build --preset default -- --quiet
+run()
+    ? @os("windows")
+    & build
+    shell~=pwsh
+:
+    .\build\kray.exe
+
+run() & build:
     ./build/kray
 
-[help] Format source files with clang-format.
-[pass] Source files formatted.
+[help] Format files with clang-format.
+[pass] Formatting complete.
 [fail] Formatting failed.
-fmt():
+fmt() & config:
     cmake --build --preset default --target format
 
 [help] Clean build outputs.
-[pass] Build outputs cleaned.
+[pass] Cleaning complete.
 [fail] Cleaning failed.
 clean():
-    rm -rf build
+    rm -rf build *.ppm

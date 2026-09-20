@@ -1,13 +1,16 @@
-#pragma once
+module;
 
 #include <optional>
 #include <span>
 
-#include "geometry/sphere.hpp"
+export module geometry.world;
 
-[[nodiscard]]
-inline std::optional<HitRecord> hit(std::span<const Sphere> world, const Ray &ray, double t_min,
-                                    double t_max) {
+export import math.ray;
+export import geometry.hit_record;
+export import geometry.sphere;
+
+export [[nodiscard]] std::optional<HitRecord> hit(std::span<const Sphere> world, const Ray &ray,
+                                                  double t_min, double t_max) {
     std::optional<HitRecord> closest_hit;
 
     double closest_t = t_max;

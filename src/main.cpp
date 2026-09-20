@@ -4,10 +4,8 @@
 #include <print>
 #include <span>
 
-#include "geometry/sphere.hpp"
-#include "geometry/world.hpp"
-#include "math/ray.hpp"
-#include "math/vec3.hpp"
+import geometry;
+import math;
 
 namespace constants {
 // ppm size

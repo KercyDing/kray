@@ -1,18 +1,21 @@
-#pragma once
+module;
 
 #include <cmath>
 #include <optional>
 
-#include "geometry/hit_record.hpp"
+export module geometry.sphere;
 
-struct Sphere {
+export import math.vec3;
+export import math.ray;
+export import geometry.hit_record;
+
+export struct Sphere {
     Point3 center{};
     double radius{};
 };
 
-[[nodiscard]]
-inline std::optional<HitRecord> hit(const Sphere &sphere, const Ray &ray, double t_min,
-                                    double t_max) {
+export [[nodiscard]]
+std::optional<HitRecord> hit(const Sphere &sphere, const Ray &ray, double t_min, double t_max) {
     const Vec3 oc = ray.origin() - sphere.center;
 
     const double a = dot(ray.direction(), ray.direction());

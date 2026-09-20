@@ -1,25 +1,13 @@
 #include <algorithm>
+#include <cmath>
 #include <fstream>
 #include <limits>
 #include <print>
 #include <span>
 
+import constants;
 import geometry;
 import math;
-
-namespace constants {
-// ppm size
-constexpr int width = 800;
-constexpr int height = 450;
-
-// viewport size
-constexpr double viewport_height = 2.0;
-constexpr double viewport_width = viewport_height * width / height;
-
-// camera specifications
-constexpr double focal_length = 1.0;
-const Point3 camera_center{0.0, 0.0, 0.0};
-}  // namespace constants
 
 int to_byte(double x) {
     x = std::clamp(x, 0.0, 1.0);
@@ -27,14 +15,34 @@ int to_byte(double x) {
     return static_cast<int>(255.999 * x);
 }
 
+[[nodiscard]]
+double linear_to_gamma(double linear) {
+    return linear > 0.0 ? std::sqrt(linear) : 0.0;
+}
+
 void write_color(std::ofstream &out, const Color &color) {
-    std::println(out, "{} {} {}", to_byte(color.x()), to_byte(color.y()), to_byte(color.z()));
+    const double r = linear_to_gamma(color.x());
+    const double g = linear_to_gamma(color.y());
+    const double b = linear_to_gamma(color.z());
+
+    std::println(out, "{} {} {}", to_byte(r), to_byte(g), to_byte(b));
 }
 
 [[nodiscard]]
-Color ray_color(const Ray &ray, std::span<const Sphere> world) {
+Color ray_color(const Ray &ray, std::span<const Sphere> world, int depth, Rng &rng) {
+    if (depth <= 0) {
+        return Color{0.0, 0.0, 0.0};
+    }
+
     if (const auto record = hit(world, ray, 0.001, std::numeric_limits<double>::infinity())) {
-        return 0.5 * (record->normal + Color{1.0, 1.0, 1.0});
+        const Vec3 scatter_direction = random_on_hemisphere(record->normal, rng);
+
+        const Ray scattered{
+            record->point,
+            scatter_direction,
+        };
+
+        return 0.5 * ray_color(scattered, world, depth - 1, rng);
     }
 
     const Vec3 direction = unit_vector(ray.direction());
@@ -93,20 +101,41 @@ int main() {
         },
     };
 
+    Rng rng{42};
+
     for (int y = 0; y < height; ++y) {
+        std::println(stderr, "scanlines remaining: {}", height - y);
+
         for (int x = 0; x < width; ++x) {
+            Color pixel_color{};
+
             const Point3 pixel_center = pixel00 + x * pixel_delta_u + y * pixel_delta_v;
 
-            const Vec3 ray_direction = pixel_center - camera_center;
+            for (int sample = 0; sample < constants::samples_per_pixel; ++sample) {
+                const double offset_u = rng.uniform() - 0.5;
 
-            const Ray ray{
-                camera_center,
-                ray_direction,
-            };
+                const double offset_v = rng.uniform() - 0.5;
 
-            write_color(out, ray_color(ray, world));
+                const Point3 pixel_sample =
+                    pixel_center + offset_u * pixel_delta_u + offset_v * pixel_delta_v;
+
+                const Vec3 ray_direction = pixel_sample - camera_center;
+
+                const Ray ray{
+                    camera_center,
+                    ray_direction,
+                };
+
+                pixel_color += ray_color(ray, world, constants::max_depth, rng);
+            }
+
+            pixel_color /= constants::samples_per_pixel;
+
+            write_color(out, pixel_color);
         }
     }
+
+    std::println(stderr, "done");
 
     return 0;
 }

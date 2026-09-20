@@ -1,7 +1,9 @@
 #include <algorithm>
+#include <array>
 #include <cmath>
 #include <fstream>
 #include <limits>
+#include <ostream>
 #include <print>
 #include <span>
 

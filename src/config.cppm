@@ -1,8 +1,8 @@
-export module constants;
+export module config;
 
 export import math;
 
-export namespace constants {
+export namespace config {
     // ppm size
     constexpr int width = 800;
     constexpr int height = 450;
@@ -17,4 +17,4 @@ export namespace constants {
 
     constexpr int max_depth = 16;
     constexpr int samples_per_pixel = 32;
-}; // namespace constants
+}; // namespace config

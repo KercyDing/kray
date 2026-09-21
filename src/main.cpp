@@ -7,7 +7,7 @@
 #include <print>
 #include <span>
 
-import constants;
+import config;
 import geometry;
 import math;
 
@@ -55,31 +55,23 @@ Color ray_color(const Ray &ray, std::span<const Sphere> world, int depth, Rng &r
 }
 
 int main() {
-    int width = constants::width;
-    int height = constants::height;
-    double viewport_width = constants::viewport_width;
-    double viewport_height = constants::viewport_height;
-
-    double focal_length = constants::focal_length;
-    Point3 camera_center = constants::camera_center;
-
     const Vec3 viewport_u{
-        viewport_width,
+        config::viewport_width,
         0.0,
         0.0,
     };
 
     const Vec3 viewport_v{
         0.0,
-        -viewport_height,
+        -config::viewport_height,
         0.0,
     };
 
-    const Vec3 pixel_delta_u = viewport_u / width;
-    const Vec3 pixel_delta_v = viewport_v / height;
+    const Vec3 pixel_delta_u = viewport_u / config::width;
+    const Vec3 pixel_delta_v = viewport_v / config::height;
 
-    const Point3 viewport_upper_left =
-        camera_center - Vec3{0.0, 0.0, focal_length} - viewport_u / 2.0 - viewport_v / 2.0;
+    const Point3 viewport_upper_left = config::camera_center - Vec3{0.0, 0.0, config::focal_length}
+                                       - viewport_u / 2.0 - viewport_v / 2.0;
 
     const Point3 pixel00 = viewport_upper_left + 0.5 * (pixel_delta_u + pixel_delta_v);
 
@@ -90,7 +82,7 @@ int main() {
         return 1;
     }
 
-    std::print(out, "P3\n{} {}\n255\n", width, height);
+    std::print(out, "P3\n{} {}\n255\n", config::width, config::height);
 
     const std::array world{
         Sphere{
@@ -105,15 +97,15 @@ int main() {
 
     Rng rng{42};
 
-    for (int y = 0; y < height; ++y) {
-        std::println(stderr, "scanlines remaining: {}", height - y);
+    for (int y = 0; y < config::height; ++y) {
+        std::println(stderr, "scanlines remaining: {}", config::height - y);
 
-        for (int x = 0; x < width; ++x) {
+        for (int x = 0; x < config::width; ++x) {
             Color pixel_color{};
 
             const Point3 pixel_center = pixel00 + x * pixel_delta_u + y * pixel_delta_v;
 
-            for (int sample = 0; sample < constants::samples_per_pixel; ++sample) {
+            for (int sample = 0; sample < config::samples_per_pixel; ++sample) {
                 const double offset_u = rng.uniform() - 0.5;
 
                 const double offset_v = rng.uniform() - 0.5;
@@ -121,17 +113,17 @@ int main() {
                 const Point3 pixel_sample =
                     pixel_center + offset_u * pixel_delta_u + offset_v * pixel_delta_v;
 
-                const Vec3 ray_direction = pixel_sample - camera_center;
+                const Vec3 ray_direction = pixel_sample - config::camera_center;
 
                 const Ray ray{
-                    camera_center,
+                    config::camera_center,
                     ray_direction,
                 };
 
-                pixel_color += ray_color(ray, world, constants::max_depth, rng);
+                pixel_color += ray_color(ray, world, config::max_depth, rng);
             }
 
-            pixel_color /= constants::samples_per_pixel;
+            pixel_color /= config::samples_per_pixel;
 
             write_color(out, pixel_color);
         }

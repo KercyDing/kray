@@ -3,7 +3,7 @@ module;
 #include <cstdint>
 #include <random>
 
-export module math.random;
+export module math:random;
 
 export class Rng {
 public:

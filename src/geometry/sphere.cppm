@@ -3,10 +3,10 @@ module;
 #include <cmath>
 #include <optional>
 
-export module geometry.sphere;
+export module geometry:sphere;
 
 export import math;
-export import geometry.hit_record;
+export import :hit_record;
 
 export struct Sphere {
     Point3 center{};

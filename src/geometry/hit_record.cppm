@@ -1,4 +1,4 @@
-export module geometry.hit_record;
+export module geometry:hit_record;
 
 export import math;
 

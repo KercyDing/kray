@@ -2,9 +2,9 @@ module;
 
 #include <cmath>
 
-export module math.vec3;
+export module math:vec3;
 
-export import math.random;
+export import :random;
 
 export class Vec3 {
 public:

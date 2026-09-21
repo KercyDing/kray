@@ -1,5 +1,5 @@
 export module math;
 
-export import math.vec3;
-export import math.ray;
-export import math.random;
+export import :vec3;
+export import :ray;
+export import :random;

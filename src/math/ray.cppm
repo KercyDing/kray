@@ -1,6 +1,6 @@
-export module math.ray;
+export module math:ray;
 
-export import math.vec3;
+export import :vec3;
 
 export class Ray {
 public:

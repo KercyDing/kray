@@ -3,11 +3,11 @@ module;
 #include <optional>
 #include <span>
 
-export module geometry.world;
+export module geometry:world;
 
 export import math;
-export import geometry.hit_record;
-export import geometry.sphere;
+export import :hit_record;
+export import :sphere;
 
 export [[nodiscard]]
 std::optional<HitRecord> hit(std::span<const Sphere> world, const Ray &ray, double t_min,

@@ -7,6 +7,13 @@ build():
     cmake --preset default
     cmake --build --preset default
 
+[help] Build the project with release optimizations.
+[pass] Release build complete.
+[fail] Release build failed.
+build-release():
+    cmake --preset release
+    cmake --build --preset release
+
 [help] Run the built program.
 [fail] Program failed.
 run()
@@ -18,6 +25,18 @@ run()
 
 run() & build:
     ./build/kray
+
+[help] Run the release build.
+[fail] Program failed.
+run-release()
+    ? @os("windows")
+    & build-release
+    shell~=pwsh
+:
+    .\build-release\kray.exe
+
+run-release() & build-release:
+    ./build-release/kray
 
 [help] Format files with clang-format.
 [pass] Formatting complete.
@@ -34,4 +53,4 @@ fmt() shell~=bash:
 [pass] Cleaning complete.
 [fail] Cleaning failed.
 clean():
-    rm -rf build *.ppm
+    rm -rf build build-release *.ppm

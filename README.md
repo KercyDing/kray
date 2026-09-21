@@ -13,6 +13,13 @@ cmake --preset default
 cmake --build --preset default
 ```
 
+Release:
+
+```bash
+cmake --preset release
+cmake --build --preset release
+```
+
 Run:
 
 ```bash
@@ -27,6 +34,8 @@ If [Only](https://github.com/onlyjs/only) is installed, the same workflow is ava
 
 ```bash
 only build
+only build-release
 only run
+only run-release
 only fmt  # requires clang-format
 ```

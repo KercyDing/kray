@@ -22,7 +22,7 @@ double linear_to_gamma(double linear) {
     return linear > 0.0 ? std::sqrt(linear) : 0.0;
 }
 
-void write_color(std::ofstream &out, const Color &color) {
+void write_color(std::ostream &out, const Color &color) {
     const double r = linear_to_gamma(color.x());
     const double g = linear_to_gamma(color.y());
     const double b = linear_to_gamma(color.z());

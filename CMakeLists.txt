@@ -4,21 +4,12 @@ project(kray VERSION 0.1.0 LANGUAGES CXX)
 
 find_package(SDL3 CONFIG REQUIRED)
 
-file(GLOB_RECURSE PROJECT_SOURCES CONFIGURE_DEPENDS
-    src/*.cpp
-    src/*.cc
-    src/*.h
-    src/*.hpp
-    include/*.h
-    include/*.hpp
-)
+file(GLOB_RECURSE PROJECT_SOURCES CONFIGURE_DEPENDS src/*.cpp)
 file(GLOB_RECURSE PROJECT_MODULES CONFIGURE_DEPENDS src/*.cppm)
 
 add_executable(kray ${PROJECT_SOURCES})
 
 target_link_libraries(kray PRIVATE SDL3::SDL3)
-
-target_include_directories(kray PRIVATE include)
 
 target_sources(
     kray

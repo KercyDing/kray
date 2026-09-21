@@ -42,26 +42,17 @@ run-release() & build-release:
 [pass] Formatting complete.
 [fail] Formatting failed.
 fmt() ? @os("windows") shell~=pwsh:
-    | $exts = 'cpp', 'cc', 'cxx', 'cppm', 'h', 'hpp'
-    | $dirs = 'src', 'include'
+    | $exts = 'cpp', 'cppm'
     |
-    | $present = $dirs | Where-Object { Test-Path $_ }
     | foreach ($e in $exts) {
-    |     foreach ($d in $present) {
-    |         Get-ChildItem -Path $d -Recurse -File -Filter "*.$e" | ForEach-Object { clang-format -i $_.FullName }
-    |     }
+    |     Get-ChildItem -Path src -Recurse -File -Filter "*.$e" | ForEach-Object { clang-format -i $_.FullName }
     | }
 
 fmt() shell~=bash:
-    | exts="cpp cc cxx cppm h hpp"
-    | dirs="src include"
+    | exts="cpp cppm"
     |
     | for e in $exts; do
-    |     for d in $dirs; do
-    |         if [ -d "$d" ]; then
-    |             find "$d" -type f -name "*.$e" -exec clang-format -i {} +;
-    |         fi
-    |     done
+    |     find src -type f -name "*.$e" -exec clang-format -i {} +;
     | done
 
 [help] Clean build outputs.

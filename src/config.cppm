@@ -4,17 +4,17 @@ export import math;
 
 export namespace config {
     // ppm size
-    constexpr int window_width = 800;
-    constexpr int window_height = 450;
+    inline constexpr int window_width = 800;
+    inline constexpr int window_height = 450;
 
     // viewport size
-    constexpr double viewport_height = 2.0;
-    constexpr double viewport_width = viewport_height * window_width / window_height;
+    inline constexpr double viewport_height = 2.0;
+    inline constexpr double viewport_width = viewport_height * window_width / window_height;
 
     // camera specifications
-    constexpr double focal_length = 1.0;
-    const Point3 camera_center{0.0, 0.0, 0.0};
+    inline constexpr double focal_length = 1.0;
+    inline const Point3 camera_center{0.0, 0.0, 0.0};
 
-    constexpr int max_depth = 16;
-    constexpr int samples_per_pixel = 32;
+    inline constexpr int max_depth = 16;
+    inline constexpr int samples_per_pixel = 32;
 }; // namespace config

@@ -2,7 +2,7 @@
 
 Kray built with C++.
 
-Requires `clang++` on `PATH`.
+Requires [clang++](https://clang.llvm.org/) (C++23 modules) and [vcpkg](https://github.com/microsoft/vcpkg) with `VCPKG_ROOT` exported.
 
 ## Development
 

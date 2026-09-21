@@ -1,7 +1,6 @@
 export module geometry.hit_record;
 
-export import math.vec3;
-export import math.ray;
+export import math;
 
 export struct HitRecord {
     Point3 point{};

@@ -20,8 +20,7 @@
       "inherits": "default",
       "binaryDir": "${sourceDir}/build-release",
       "cacheVariables": {
-        "CMAKE_BUILD_TYPE": "Release",
-        "CMAKE_CXX_FLAGS_RELEASE": "-O2 -DNDEBUG"
+        "CMAKE_BUILD_TYPE": "Release"
       }
     }
   ],

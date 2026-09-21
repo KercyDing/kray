@@ -5,8 +5,7 @@ module;
 
 export module geometry.sphere;
 
-export import math.vec3;
-export import math.ray;
+export import math;
 export import geometry.hit_record;
 
 export struct Sphere {
@@ -14,44 +13,42 @@ export struct Sphere {
     double radius{};
 };
 
-export {
-    [[nodiscard]]
-    std::optional<HitRecord> hit(const Sphere &sphere, const Ray &ray, double t_min, double t_max) {
-        const Vec3 oc = ray.origin() - sphere.center;
+export [[nodiscard]]
+std::optional<HitRecord> hit(const Sphere &sphere, const Ray &ray, double t_min, double t_max) {
+    const Vec3 oc = ray.origin() - sphere.center;
 
-        const double a = dot(ray.direction(), ray.direction());
+    const double a = dot(ray.direction(), ray.direction());
 
-        const double half_b = dot(oc, ray.direction());
+    const double half_b = dot(oc, ray.direction());
 
-        const double c = dot(oc, oc) - sphere.radius * sphere.radius;
+    const double c = dot(oc, oc) - sphere.radius * sphere.radius;
 
-        const double discriminant = half_b * half_b - a * c;
+    const double discriminant = half_b * half_b - a * c;
 
-        if (discriminant < 0.0) {
-            return std::nullopt;
-        }
+    if (discriminant < 0.0) {
+        return std::nullopt;
+    }
 
-        const double sqrt_d = std::sqrt(discriminant);
+    const double sqrt_d = std::sqrt(discriminant);
 
-        double root = (-half_b - sqrt_d) / a;
+    double root = (-half_b - sqrt_d) / a;
+
+    if (root <= t_min || root >= t_max) {
+        root = (-half_b + sqrt_d) / a;
 
         if (root <= t_min || root >= t_max) {
-            root = (-half_b + sqrt_d) / a;
-
-            if (root <= t_min || root >= t_max) {
-                return std::nullopt;
-            }
+            return std::nullopt;
         }
-
-        HitRecord record;
-
-        record.t = root;
-        record.point = ray.at(root);
-
-        const Vec3 outward_normal = (record.point - sphere.center) / sphere.radius;
-
-        record.set_face_normal(ray, outward_normal);
-
-        return record;
     }
+
+    HitRecord record;
+
+    record.t = root;
+    record.point = ray.at(root);
+
+    const Vec3 outward_normal = (record.point - sphere.center) / sphere.radius;
+
+    record.set_face_normal(ray, outward_normal);
+
+    return record;
 }

@@ -4,12 +4,12 @@ export import math;
 
 export namespace config {
     // ppm size
-    constexpr int width = 800;
-    constexpr int height = 450;
+    constexpr int window_width = 800;
+    constexpr int window_height = 450;
 
     // viewport size
     constexpr double viewport_height = 2.0;
-    constexpr double viewport_width = viewport_height * width / height;
+    constexpr double viewport_width = viewport_height * window_width / window_height;
 
     // camera specifications
     constexpr double focal_length = 1.0;

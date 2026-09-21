@@ -100,43 +100,43 @@ export {
         v /= t;
         return v;
     }
+}
 
-    [[nodiscard]]
-    constexpr double dot(const Vec3 &a, const Vec3 &b) {
-        return a.x() * b.x() + a.y() * b.y() + a.z() * b.z();
-    }
+export [[nodiscard]]
+constexpr double dot(const Vec3 &a, const Vec3 &b) {
+    return a.x() * b.x() + a.y() * b.y() + a.z() * b.z();
+}
 
-    [[nodiscard]]
-    constexpr Vec3 lerp(const Vec3 &a, const Vec3 &b, double t) {
-        return (1.0 - t) * a + t * b;
-    }
+export [[nodiscard]]
+constexpr Vec3 lerp(const Vec3 &a, const Vec3 &b, double t) {
+    return (1.0 - t) * a + t * b;
+}
 
-    [[nodiscard]]
-    Vec3 unit_vector(const Vec3 &v) {
-        return v / v.length();
-    }
+export [[nodiscard]]
+Vec3 unit_vector(const Vec3 &v) {
+    return v / v.length();
+}
 
-    [[nodiscard]]
-    Vec3 random_on_hemisphere(const Vec3 &normal, Rng &rng) {
-        Vec3 direction;
+export [[nodiscard]]
+Vec3 random_on_hemisphere(const Vec3 &normal, Rng &rng) {
+    Vec3 direction;
 
-        while (true) {
-            direction = Vec3{
-                2.0 * rng.uniform() - 1.0,
-                2.0 * rng.uniform() - 1.0,
-                2.0 * rng.uniform() - 1.0,
-            };
+    while (true) {
+        direction = Vec3{
+            2.0 * rng.uniform() - 1.0,
+            2.0 * rng.uniform() - 1.0,
+            2.0 * rng.uniform() - 1.0,
+        };
 
-            const double length_squared = direction.length_squared();
+        const double length_squared = direction.length_squared();
 
-            if (length_squared > 1e-160 && length_squared <= 1.0) {
-                direction /= std::sqrt(length_squared);
-                break;
-            }
+        if (length_squared > 1e-160 && length_squared <= 1.0) {
+            direction /= std::sqrt(length_squared);
+            break;
         }
-
-        return dot(direction, normal) > 0.0 ? direction : -direction;
     }
+
+    return dot(direction, normal) > 0.0 ? direction : -direction;
 }
 
 export using Point3 = Vec3;

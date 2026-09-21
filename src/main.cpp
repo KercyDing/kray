@@ -1,88 +1,51 @@
-#include <algorithm>
+#include <SDL3/SDL.h>
+#include <SDL3/SDL_main.h>
+
 #include <array>
-#include <cmath>
-#include <fstream>
-#include <limits>
-#include <ostream>
 #include <print>
-#include <span>
+#include <vector>
 
 import config;
-import geometry;
 import math;
+import geometry;
+import render;
 
-int to_byte(double x) {
-    x = std::clamp(x, 0.0, 1.0);
-
-    return static_cast<int>(255.999 * x);
-}
-
-[[nodiscard]]
-double linear_to_gamma(double linear) {
-    return linear > 0.0 ? std::sqrt(linear) : 0.0;
-}
-
-void write_color(std::ostream &out, const Color &color) {
-    const double r = linear_to_gamma(color.x());
-    const double g = linear_to_gamma(color.y());
-    const double b = linear_to_gamma(color.z());
-
-    std::println(out, "{} {} {}", to_byte(r), to_byte(g), to_byte(b));
-}
-
-[[nodiscard]]
-Color ray_color(const Ray &ray, std::span<const Sphere> world, int depth, Rng &rng) {
-    if (depth <= 0) {
-        return Color{0.0, 0.0, 0.0};
-    }
-
-    if (const auto record = hit(world, ray, 0.001, std::numeric_limits<double>::infinity())) {
-        const Vec3 scatter_direction = random_on_hemisphere(record->normal, rng);
-
-        const Ray scattered{
-            record->point,
-            scatter_direction,
-        };
-
-        return 0.5 * ray_color(scattered, world, depth - 1, rng);
-    }
-
-    const Vec3 direction = unit_vector(ray.direction());
-
-    const double t = 0.5 * (direction.y() + 1.0);
-
-    return lerp(Color{1.0, 1.0, 1.0}, Color{0.5, 0.7, 1.0}, t);
-}
+using namespace config;
 
 int main() {
+    std::vector<uint32_t> pixels(window_width * window_height);
+
+    SDL_Init(SDL_INIT_VIDEO);
+
+    SDL_Window *window = SDL_CreateWindow("kray", window_width, window_height, 0);
+
+    SDL_Renderer *renderer = SDL_CreateRenderer(window, nullptr);
+
+    SDL_Texture *texture = SDL_CreateTexture(renderer,
+                                             SDL_PIXELFORMAT_RGBA8888,
+                                             SDL_TEXTUREACCESS_STREAMING,
+                                             window_width,
+                                             window_height);
+
     const Vec3 viewport_u{
-        config::viewport_width,
+        viewport_width,
         0.0,
         0.0,
     };
 
     const Vec3 viewport_v{
         0.0,
-        -config::viewport_height,
+        -viewport_height,
         0.0,
     };
 
-    const Vec3 pixel_delta_u = viewport_u / config::width;
-    const Vec3 pixel_delta_v = viewport_v / config::height;
+    const Vec3 pixel_delta_u = viewport_u / window_width;
+    const Vec3 pixel_delta_v = viewport_v / window_height;
 
-    const Point3 viewport_upper_left = config::camera_center - Vec3{0.0, 0.0, config::focal_length}
-                                       - viewport_u / 2.0 - viewport_v / 2.0;
+    const Point3 viewport_upper_left =
+        camera_center - Vec3{0.0, 0.0, focal_length} - viewport_u / 2.0 - viewport_v / 2.0;
 
     const Point3 pixel00 = viewport_upper_left + 0.5 * (pixel_delta_u + pixel_delta_v);
-
-    std::ofstream out{"image.ppm"};
-
-    if (!out) {
-        std::println(stderr, "failed to open image.ppm");
-        return 1;
-    }
-
-    std::print(out, "P3\n{} {}\n255\n", config::width, config::height);
 
     const std::array world{
         Sphere{
@@ -97,15 +60,15 @@ int main() {
 
     Rng rng{42};
 
-    for (int y = 0; y < config::height; ++y) {
-        std::println(stderr, "scanlines remaining: {}", config::height - y);
+    for (int y = 0; y < window_height; ++y) {
+        std::println(stderr, "scanlines remaining: {}", window_height - y);
 
-        for (int x = 0; x < config::width; ++x) {
+        for (int x = 0; x < window_width; ++x) {
             Color pixel_color{};
 
             const Point3 pixel_center = pixel00 + x * pixel_delta_u + y * pixel_delta_v;
 
-            for (int sample = 0; sample < config::samples_per_pixel; ++sample) {
+            for (int sample = 0; sample < samples_per_pixel; ++sample) {
                 const double offset_u = rng.uniform() - 0.5;
 
                 const double offset_v = rng.uniform() - 0.5;
@@ -113,23 +76,43 @@ int main() {
                 const Point3 pixel_sample =
                     pixel_center + offset_u * pixel_delta_u + offset_v * pixel_delta_v;
 
-                const Vec3 ray_direction = pixel_sample - config::camera_center;
+                const Vec3 ray_direction = pixel_sample - camera_center;
 
                 const Ray ray{
-                    config::camera_center,
+                    camera_center,
                     ray_direction,
                 };
 
-                pixel_color += ray_color(ray, world, config::max_depth, rng);
+                pixel_color += ray_color(ray, world, max_depth, rng);
             }
 
-            pixel_color /= config::samples_per_pixel;
+            pixel_color /= samples_per_pixel;
 
-            write_color(out, pixel_color);
+            pixels[y * window_width + x] = pack_color(pixel_color);
         }
     }
 
+    SDL_UpdateTexture(texture, nullptr, pixels.data(), window_width * sizeof(uint32_t));
+
     std::println(stderr, "done");
+
+    bool running = true;
+
+    while (running) {
+        SDL_Event event;
+
+        while (SDL_PollEvent(&event)) {
+            if (event.type == SDL_EVENT_QUIT) {
+                running = false;
+            }
+        }
+
+        SDL_RenderClear(renderer);
+
+        SDL_RenderTexture(renderer, texture, nullptr, nullptr);
+
+        SDL_RenderPresent(renderer);
+    }
 
     return 0;
 }

@@ -5,6 +5,9 @@
       "name": "default",
       "generator": "Ninja",
       "binaryDir": "${sourceDir}/build",
+      "environment": {
+        "PATH": "/opt/homebrew/opt/llvm/bin:/usr/local/opt/llvm/bin:$penv{PATH}"
+      },
       "cacheVariables": {
         "CMAKE_BUILD_TYPE": "Debug",
         "CMAKE_EXPORT_COMPILE_COMMANDS": "ON",

@@ -2,17 +2,14 @@
 
 Kray built with C++.
 
-## Build
+Requires `clang++` on `PATH`.
 
-Configure:
-
-```bash
-cmake --preset default
-```
+## Development
 
 Build:
 
 ```bash
+cmake --preset default
 cmake --build --preset default
 ```
 
@@ -20,12 +17,8 @@ Run:
 
 ```bash
 ./build/kray
-```
-
-Format:
-
-```bash
-cmake --build --preset default --target format
+# On Windows:
+# .\build\kray.exe
 ```
 
 ## Using Only
@@ -33,12 +26,7 @@ cmake --build --preset default --target format
 If [Only](https://github.com/onlyjs/only) is installed, the same workflow is available through the project `Onlyfile`:
 
 ```bash
-only config
 only build
 only run
-only fmt
-only clean
+only fmt  # requires clang-format
 ```
-
-`build`, `run`, and `fmt` depend on `config`, so they configure the build directory themselves and
-work on a clean checkout. Run `only config` alone to configure without building.

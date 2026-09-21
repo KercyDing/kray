@@ -1,17 +1,17 @@
 {
-  "version": 2,
+  "version": 8,
   "configurePresets": [
     {
       "name": "default",
       "generator": "Ninja",
       "binaryDir": "${sourceDir}/build",
       "environment": {
-        "PATH": "/opt/homebrew/opt/llvm/bin:/usr/local/opt/llvm/bin:$penv{PATH}"
+        "PATH": "/opt/homebrew/opt/llvm/bin${pathListSep}/usr/local/opt/llvm/bin${pathListSep}$penv{PATH}"
       },
       "cacheVariables": {
         "CMAKE_BUILD_TYPE": "Debug",
-        "CMAKE_EXPORT_COMPILE_COMMANDS": "ON",
-        "CMAKE_CXX_COMPILER": "clang++"
+        "CMAKE_CXX_COMPILER": "clang++",
+        "CMAKE_EXPORT_COMPILE_COMMANDS": true
       }
     }
   ],

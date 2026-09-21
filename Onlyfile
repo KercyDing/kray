@@ -1,15 +1,10 @@
 !version 0.5
 
-[help] Configure the CMake build.
-[pass] CMake configuration complete.
-[fail] CMake configuration failed.
-config():
-    cmake --preset default
-
 [help] Build the project.
 [pass] Build complete.
 [fail] Build failed.
-build() & config:
+build():
+    cmake --preset default
     cmake --build --preset default
 
 [help] Run the built program.
@@ -27,8 +22,13 @@ run() & build:
 [help] Format files with clang-format.
 [pass] Formatting complete.
 [fail] Formatting failed.
-fmt() & config:
-    cmake --build --preset default --target format
+fmt() ? @os("windows") shell~=pwsh:
+    | $exts = 'cpp', 'cc', 'cxx', 'cppm', 'h', 'hpp'
+    | foreach ($e in $exts) { Get-ChildItem -Path src, include -Recurse -File -Filter "*.$e" | ForEach-Object { clang-format -i $_.FullName } }
+
+fmt() shell~=bash:
+    | exts="cpp cc cxx cppm h hpp"
+    | for e in $exts; do find src include -type f -name "*.$e" -exec clang-format -i {} +; done
 
 [help] Clean build outputs.
 [pass] Cleaning complete.

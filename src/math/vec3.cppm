@@ -99,6 +99,15 @@ export {
     }
 
     [[nodiscard]]
+    constexpr Vec3 operator*(Vec3 u, Vec3 v) {
+        return {
+            u.x() * v.x(),
+            u.y() * v.y(),
+            u.z() * v.z(),
+        };
+    }
+
+    [[nodiscard]]
     constexpr Vec3 operator/(Vec3 v, double t) {
         v /= t;
         return v;
@@ -121,7 +130,7 @@ Vec3 unit_vector(const Vec3 &v) {
 }
 
 export [[nodiscard]]
-Vec3 random_on_hemisphere(const Vec3 &normal, Rng &rng) {
+Vec3 random_unit_vector(Rng &rng) {
     Vec3 direction;
 
     while (true) {
@@ -135,11 +144,9 @@ Vec3 random_on_hemisphere(const Vec3 &normal, Rng &rng) {
 
         if (length_squared > 1e-160 && length_squared <= 1.0) {
             direction /= std::sqrt(length_squared);
-            break;
+            return direction;
         }
     }
-
-    return dot(direction, normal) > 0.0 ? direction : -direction;
 }
 
 export using Point3 = Vec3;

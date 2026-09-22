@@ -5,6 +5,7 @@ export import math;
 export struct HitRecord {
     Point3 point{};
     Vec3 normal{};
+    Color albedo;
     double t{};
     bool front_face{};
 

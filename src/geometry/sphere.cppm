@@ -11,6 +11,7 @@ export import :hit_record;
 export struct Sphere {
     Point3 center{};
     double radius{};
+    Color albedo;
 };
 
 export [[nodiscard]]
@@ -49,6 +50,8 @@ std::optional<HitRecord> hit(const Sphere &sphere, const Ray &ray, double t_min,
     const Vec3 outward_normal = (record.point - sphere.center) / sphere.radius;
 
     record.set_face_normal(ray, outward_normal);
+
+    record.albedo = sphere.albedo;
 
     return record;
 }

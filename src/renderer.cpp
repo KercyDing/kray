@@ -51,14 +51,14 @@ namespace {
         }
 
         if (const auto record = hit(world, ray, 0.001, std::numeric_limits<double>::infinity())) {
-            const Vec3 scatter_direction = random_on_hemisphere(record->normal, rng);
+            Vec3 scatter_direction = record->normal + random_unit_vector(rng);
 
             const Ray scattered{
                 record->point,
                 scatter_direction,
             };
 
-            return 0.5 * ray_color(scattered, world, depth - 1, rng);
+            return record->albedo * ray_color(scattered, world, depth - 1, rng);
         }
 
         const Vec3 direction = unit_vector(ray.direction());

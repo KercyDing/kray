@@ -15,9 +15,11 @@ public:
     [[nodiscard]] constexpr double x() const {
         return e_[0];
     }
+
     [[nodiscard]] constexpr double y() const {
         return e_[1];
     }
+
     [[nodiscard]] constexpr double z() const {
         return e_[2];
     }
@@ -29,6 +31,7 @@ public:
     [[nodiscard]] constexpr double operator[](int i) const {
         return e_[i];
     }
+
     [[nodiscard]] constexpr double &operator[](int i) {
         return e_[i];
     }

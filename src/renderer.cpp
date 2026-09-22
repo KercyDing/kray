@@ -18,21 +18,25 @@ namespace {
 
     constexpr std::size_t pixel_count = config::window_width * config::window_height;
 
-    [[nodiscard]] std::size_t index(int x, int y) {
+    [[nodiscard]]
+    std::size_t index(int x, int y) {
         return static_cast<std::size_t>(y) * config::window_width + x;
     }
 
-    [[nodiscard]] int to_byte(double x) {
+    [[nodiscard]]
+    int to_byte(double x) {
         x = std::clamp(x, 0.0, 1.0);
 
         return static_cast<int>(255.999 * x);
     }
 
-    [[nodiscard]] double linear_to_gamma(double linear) {
+    [[nodiscard]]
+    double linear_to_gamma(double linear) {
         return linear > 0.0 ? std::sqrt(linear) : 0.0;
     }
 
-    [[nodiscard]] std::uint32_t pack_color(const Color &color) {
+    [[nodiscard]]
+    std::uint32_t pack_color(const Color &color) {
         const auto r = static_cast<std::uint32_t>(to_byte(linear_to_gamma(color.x())));
         const auto g = static_cast<std::uint32_t>(to_byte(linear_to_gamma(color.y())));
         const auto b = static_cast<std::uint32_t>(to_byte(linear_to_gamma(color.z())));
@@ -40,8 +44,8 @@ namespace {
         return (r << 24) | (g << 16) | (b << 8) | 0xFFu;
     }
 
-    [[nodiscard]] Color ray_color(const Ray &ray, std::span<const Sphere> world, int depth,
-                                  Rng &rng) {
+    [[nodiscard]]
+    Color ray_color(const Ray &ray, std::span<const Sphere> world, int depth, Rng &rng) {
         if (depth <= 0) {
             return Color{0.0, 0.0, 0.0};
         }

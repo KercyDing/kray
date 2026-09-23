@@ -1,9 +1,9 @@
 #define SDL_MAIN_HANDLED
 
-#include <SDL3/SDL.h>
-
 #include <cstdint>
 #include <vector>
+
+#include <SDL3/SDL.h>
 
 import config;
 import renderer;

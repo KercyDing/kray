@@ -22,4 +22,8 @@ set_target_properties(kray PROPERTIES
     CXX_STANDARD 23
     CXX_STANDARD_REQUIRED ON
 )
-target_compile_options(kray PRIVATE -Wall -Wextra -Wpedantic)
+if(MSVC)
+    target_compile_options(kray PRIVATE /W4 /utf-8)
+else()
+    target_compile_options(kray PRIVATE -Wall -Wextra -Wpedantic)
+endif()

@@ -3,40 +3,66 @@
 [help] Build the project.
 [pass] Build complete.
 [fail] Build failed.
-build():
-    cmake --preset default
-    cmake --build --preset default
+build(preset = "gcc") ? @os("linux"):
+    cmake --preset {{preset}}
+    cmake --build --preset {{preset}}
+
+build(preset = "clang") ? @os("macos"):
+    cmake --preset {{preset}}
+    cmake --build --preset {{preset}}
+
+build(preset = "msvc") ? @os("windows"):
+    cmake --preset {{preset}}
+    cmake --build --preset {{preset}}
 
 [help] Build the project with release optimizations.
 [pass] Release build complete.
 [fail] Release build failed.
-build-release():
-    cmake --preset release
-    cmake --build --preset release
+build-release(preset = "gcc") ? @os("linux"):
+    cmake --preset {{preset}}
+    cmake --build --preset {{preset}}-release
+
+build-release(preset = "clang") ? @os("macos"):
+    cmake --preset {{preset}}
+    cmake --build --preset {{preset}}-release
+
+build-release(preset = "msvc") ? @os("windows"):
+    cmake --preset {{preset}}
+    cmake --build --preset {{preset}}-release
 
 [help] Run the built program.
 [fail] Program failed.
-run()
-    ? @os("windows")
-    & build
-    shell~=pwsh
-:
-    .\build\kray.exe
+run(preset = "gcc") ? @os("linux"):
+    cmake --preset {{preset}}
+    cmake --build --preset {{preset}}
+    ./build/{{preset}}/Debug/kray
 
-run() & build:
-    ./build/kray
+run(preset = "clang") ? @os("macos"):
+    cmake --preset {{preset}}
+    cmake --build --preset {{preset}}
+    ./build/{{preset}}/Debug/kray
+
+run(preset = "msvc") ? @os("windows") shell~=pwsh:
+    cmake --preset {{preset}}
+    cmake --build --preset {{preset}}
+    build/{{preset}}/Debug/kray.exe
 
 [help] Run the release build.
 [fail] Program failed.
-run-release()
-    ? @os("windows")
-    & build-release
-    shell~=pwsh
-:
-    .\build-release\kray.exe
+run-release(preset = "gcc") ? @os("linux"):
+    cmake --preset {{preset}}
+    cmake --build --preset {{preset}}-release
+    ./build/{{preset}}/Release/kray
 
-run-release() & build-release:
-    ./build-release/kray
+run-release(preset = "clang") ? @os("macos"):
+    cmake --preset {{preset}}
+    cmake --build --preset {{preset}}-release
+    ./build/{{preset}}/Release/kray
+
+run-release(preset = "msvc") ? @os("windows") shell~=pwsh:
+    cmake --preset {{preset}}
+    cmake --build --preset {{preset}}-release
+    build/{{preset}}/Release/kray.exe
 
 [help] Format files with clang-format.
 [pass] Formatting complete.
@@ -59,4 +85,4 @@ fmt() shell~=bash:
 [pass] Cleaning complete.
 [fail] Cleaning failed.
 clean():
-    rm -rf build build-release *.ppm
+    rm -rf build build-release

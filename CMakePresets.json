@@ -2,36 +2,49 @@
   "version": 8,
   "configurePresets": [
     {
-      "name": "default",
-      "generator": "Ninja",
-      "binaryDir": "${sourceDir}/build",
-      "environment": {
-        "PATH": "/opt/homebrew/opt/llvm/bin${pathListSep}/usr/local/opt/llvm/bin${pathListSep}$penv{PATH}"
-      },
+      "name": "base",
+      "hidden": true,
+      "binaryDir": "${sourceDir}/build/${presetName}",
       "cacheVariables": {
-        "CMAKE_BUILD_TYPE": "Debug",
-        "CMAKE_CXX_COMPILER": "clang++",
-        "CMAKE_EXPORT_COMPILE_COMMANDS": true,
         "CMAKE_TOOLCHAIN_FILE": "$env{VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake"
       }
     },
     {
-      "name": "release",
-      "inherits": "default",
-      "binaryDir": "${sourceDir}/build-release",
+      "name": "gcc",
+      "inherits": "base",
+      "generator": "Ninja Multi-Config",
       "cacheVariables": {
-        "CMAKE_BUILD_TYPE": "Release"
+        "CMAKE_CXX_COMPILER": "g++"
+      }
+    },
+    {
+      "name": "clang",
+      "inherits": "base",
+      "generator": "Ninja Multi-Config",
+      "environment": {
+        "PATH": "/opt/homebrew/opt/llvm/bin${pathListSep}/usr/local/opt/llvm/bin${pathListSep}$penv{PATH}"
+      },
+      "cacheVariables": {
+        "CMAKE_CXX_COMPILER": "clang++",
+        "CMAKE_EXPORT_COMPILE_COMMANDS": true
+      }
+    },
+    {
+      "name": "msvc",
+      "inherits": "base",
+      "condition": {
+        "type": "equals",
+        "lhs": "${hostSystemName}",
+        "rhs": "Windows"
       }
     }
   ],
   "buildPresets": [
-    {
-      "name": "default",
-      "configurePreset": "default"
-    },
-    {
-      "name": "release",
-      "configurePreset": "release"
-    }
+    { "name": "gcc", "displayName": "gcc-debug", "configurePreset": "gcc", "configuration": "Debug" },
+    { "name": "gcc-release", "displayName": "gcc-release", "configurePreset": "gcc", "configuration": "Release" },
+    { "name": "clang", "displayName": "clang-debug", "configurePreset": "clang", "configuration": "Debug" },
+    { "name": "clang-release", "displayName": "clang-release", "configurePreset": "clang", "configuration": "Release" },
+    { "name": "msvc", "displayName": "msvc-debug", "configurePreset": "msvc", "configuration": "Debug" },
+    { "name": "msvc-release", "displayName": "msvc-release", "configurePreset": "msvc", "configuration": "Release" }
   ]
 }

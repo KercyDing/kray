@@ -7,7 +7,7 @@ export module math:random;
 
 export class Rng {
 public:
-    explicit Rng(std::uint64_t seed) : engine_{seed} {}
+    explicit Rng(const std::uint64_t seed) : engine_{seed} {}
 
     Rng() : Rng{std::random_device{}()} {}
 

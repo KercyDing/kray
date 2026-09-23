@@ -48,8 +48,8 @@ private:
 
     Rng rng_{42};
 
-    std::vector<Color> accumulation_;
-    std::vector<std::uint32_t> pixels_;
+    std::vector<Color> accumulation_{};
+    std::vector<std::uint32_t> pixels_{};
 
     int samples_done_{0};
 };

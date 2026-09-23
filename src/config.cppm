@@ -13,7 +13,7 @@ export namespace config {
 
     // camera specifications
     inline constexpr double focal_length = 1.0;
-    inline const Point3 camera_center{0.0, 0.0, 0.0};
+    inline constexpr Point3 camera_center{0.0, 0.0, 0.0};
 
     inline constexpr int max_depth = 16;
     inline constexpr int samples_per_pixel = 64;

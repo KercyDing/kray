@@ -11,7 +11,7 @@ export import :hit_record;
 export struct Sphere {
     Point3 center{};
     double radius{};
-    Color albedo;
+    Color albedo{};
 };
 
 export [[nodiscard]]

@@ -6,7 +6,8 @@ export class Ray {
 public:
     constexpr Ray() = default;
 
-    constexpr Ray(Point3 origin, Vec3 direction) : origin_{origin}, direction_{direction} {}
+    constexpr Ray(const Point3 &origin, const Vec3 &direction)
+        : origin_{origin}, direction_{direction} {}
 
     [[nodiscard]] constexpr Point3 origin() const {
         return origin_;

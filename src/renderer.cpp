@@ -2,7 +2,6 @@ module;
 
 #include <algorithm>
 #include <cmath>
-#include <cstddef>
 #include <cstdint>
 #include <limits>
 #include <span>
@@ -71,21 +70,22 @@ namespace {
 } // namespace
 
 Camera::Camera() {
-    const Vec3 viewport_u{config::viewport_width, 0.0, 0.0};
+    constexpr Vec3 viewport_u{config::viewport_width, 0.0, 0.0};
 
-    const Vec3 viewport_v{0.0, -config::viewport_height, 0.0};
+    constexpr Vec3 viewport_v{0.0, -config::viewport_height, 0.0};
 
     pixel_delta_u_ = viewport_u / config::window_width;
 
     pixel_delta_v_ = viewport_v / config::window_height;
 
-    const Point3 viewport_upper_left = config::camera_center - Vec3{0.0, 0.0, config::focal_length}
-                                       - viewport_u / 2.0 - viewport_v / 2.0;
+    constexpr Point3 viewport_upper_left = config::camera_center
+                                           - Vec3{0.0, 0.0, config::focal_length} - viewport_u / 2.0
+                                           - viewport_v / 2.0;
 
     pixel00_ = viewport_upper_left + 0.5 * (pixel_delta_u_ + pixel_delta_v_);
 }
 
-Ray Camera::ray(int x, int y, double offset_u, double offset_v) const {
+Ray Camera::ray(const int x, const int y, const double offset_u, const double offset_v) const {
     const Point3 pixel_center = pixel00_ + x * pixel_delta_u_ + y * pixel_delta_v_;
 
     const Point3 pixel_sample =

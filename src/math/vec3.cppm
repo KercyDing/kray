@@ -10,7 +10,7 @@ export class Vec3 {
 public:
     constexpr Vec3() = default;
 
-    constexpr Vec3(double x, double y, double z) : e_{x, y, z} {}
+    constexpr Vec3(const double x, const double y, const double z) : e_{x, y, z} {}
 
     [[nodiscard]] constexpr double x() const {
         return e_[0];
@@ -99,7 +99,7 @@ export {
     }
 
     [[nodiscard]]
-    constexpr Vec3 operator*(Vec3 u, Vec3 v) {
+    constexpr Vec3 operator*(const Vec3 &u, const Vec3 &v) {
         return {
             u.x() * v.x(),
             u.y() * v.y(),
@@ -108,7 +108,7 @@ export {
     }
 
     [[nodiscard]]
-    constexpr Vec3 operator/(Vec3 v, double t) {
+    constexpr Vec3 operator/(Vec3 v, const double t) {
         v /= t;
         return v;
     }
@@ -131,18 +131,15 @@ Vec3 unit_vector(const Vec3 &v) {
 
 export [[nodiscard]]
 Vec3 random_unit_vector(Rng &rng) {
-    Vec3 direction;
-
     while (true) {
-        direction = Vec3{
+        auto direction = Vec3{
             2.0 * rng.uniform() - 1.0,
             2.0 * rng.uniform() - 1.0,
             2.0 * rng.uniform() - 1.0,
         };
 
-        const double length_squared = direction.length_squared();
-
-        if (length_squared > 1e-160 && length_squared <= 1.0) {
+        if (const double length_squared = direction.length_squared();
+            length_squared > 1e-160 && length_squared <= 1.0) {
             direction /= std::sqrt(length_squared);
             return direction;
         }

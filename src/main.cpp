@@ -7,21 +7,22 @@
 
 import config;
 import renderer;
+import sdl3;
 
 using namespace config;
 
 int main() {
     SDL_Init(SDL_INIT_VIDEO);
 
-    SDL_Window *window = SDL_CreateWindow("kray", window_width, window_height, 0);
+    const sdl3::Window window{"kray", window_width, window_height, 0};
 
-    SDL_Renderer *sdl_renderer = SDL_CreateRenderer(window, nullptr);
+    const sdl3::Renderer sdl_renderer{window.get(), nullptr};
 
-    SDL_Texture *texture = SDL_CreateTexture(sdl_renderer,
-                                             SDL_PIXELFORMAT_RGBA8888,
-                                             SDL_TEXTUREACCESS_STREAMING,
-                                             window_width,
-                                             window_height);
+    const sdl3::Texture texture{sdl_renderer.get(),
+                                SDL_PIXELFORMAT_RGBA8888,
+                                SDL_TEXTUREACCESS_STREAMING,
+                                window_width,
+                                window_height};
 
     Renderer renderer;
 
@@ -48,17 +49,19 @@ int main() {
             const std::vector<std::uint32_t> &pixels = renderer.pixels();
 
             SDL_UpdateTexture(
-                texture, nullptr, pixels.data(), window_width * sizeof(std::uint32_t));
+                texture.get(), nullptr, pixels.data(), window_width * sizeof(std::uint32_t));
 
             --remaining;
         }
 
-        SDL_RenderClear(sdl_renderer);
+        SDL_RenderClear(sdl_renderer.get());
 
-        SDL_RenderTexture(sdl_renderer, texture, nullptr, nullptr);
+        SDL_RenderTexture(sdl_renderer.get(), texture.get(), nullptr, nullptr);
 
-        SDL_RenderPresent(sdl_renderer);
+        SDL_RenderPresent(sdl_renderer.get());
     }
+
+    SDL_Quit();
 
     return 0;
 }

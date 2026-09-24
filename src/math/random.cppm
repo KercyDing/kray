@@ -1,5 +1,6 @@
 module;
 
+#include <bit>
 #include <cstdint>
 
 export module math:random;
@@ -22,7 +23,7 @@ public:
 
     [[nodiscard]]
     double uniform() {
-        const std::uint64_t result = rotl(s_[1] * 5, 7) * 9;
+        const std::uint64_t result = std::rotl(s_[1] * 5, 7) * 9;
 
         const std::uint64_t t = s_[1] << 17;
 
@@ -32,16 +33,11 @@ public:
         s_[0] ^= s_[3];
 
         s_[2] ^= t;
-        s_[3] = rotl(s_[3], 45);
+        s_[3] = std::rotl(s_[3], 45);
 
         return static_cast<double>(result >> 11) * 0x1.0p-53;
     }
 
 private:
-    [[nodiscard]]
-    static constexpr std::uint64_t rotl(const std::uint64_t x, const int k) {
-        return (x << k) | (x >> (64 - k));
-    }
-
     std::uint64_t s_[4]{};
 };

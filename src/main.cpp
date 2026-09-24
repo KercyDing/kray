@@ -1,6 +1,7 @@
 #define SDL_MAIN_HANDLED
 
 #include <cstdint>
+#include <print>
 #include <vector>
 
 #include <SDL3/SDL.h>
@@ -28,6 +29,7 @@ int main() {
     int remaining = samples_per_pixel;
 
     bool running = true;
+    bool done = false;
 
     while (running) {
         SDL_Event event;
@@ -43,6 +45,8 @@ int main() {
         }
 
         if (remaining > 0) {
+            std::println("Remaining: {}", remaining);
+
             renderer.render_pass();
 
             const std::vector<std::uint32_t> &pixels = renderer.pixels();
@@ -51,6 +55,10 @@ int main() {
                 texture.get(), nullptr, pixels.data(), window_width * sizeof(std::uint32_t));
 
             --remaining;
+        } else if (!done) {
+            done = true;
+
+            std::println("done");
         }
 
         SDL_RenderClear(sdl_renderer.get());

@@ -4,7 +4,7 @@ module;
 #include <cstdint>
 #include <vector>
 
-export module renderer;
+export module engine:renderer;
 
 import config;
 import math;

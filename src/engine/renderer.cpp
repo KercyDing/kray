@@ -7,7 +7,7 @@ module;
 #include <span>
 #include <vector>
 
-module renderer;
+module engine;
 
 import config;
 import math;

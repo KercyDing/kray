@@ -2,7 +2,7 @@ module;
 
 #include <SDL3/SDL.h>
 
-module sdl3;
+module engine;
 
 namespace sdl3 {
 

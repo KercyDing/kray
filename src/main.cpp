@@ -6,8 +6,7 @@
 #include <SDL3/SDL.h>
 
 import config;
-import renderer;
-import sdl3;
+import engine;
 
 using namespace config;
 

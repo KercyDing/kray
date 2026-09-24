@@ -1,4 +1,4 @@
 export module engine;
 
-export import :renderer;
+export import :raytracer;
 export import :sdl3;

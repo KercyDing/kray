@@ -8,7 +8,7 @@ module;
 #include <span>
 #include <vector>
 
-export module engine:renderer;
+export module engine:raytracer;
 
 import config;
 import math;
@@ -26,9 +26,9 @@ private:
     Vec3 pixel_delta_v_{};
 };
 
-export class Renderer {
+export class Raytracer {
 public:
-    Renderer();
+    Raytracer();
 
     void render_pass();
 
@@ -140,9 +140,9 @@ Ray Camera::ray(const int x, const int y, const double offset_u, const double of
     return Ray{config::camera_center, pixel_sample - config::camera_center};
 }
 
-Renderer::Renderer() : accumulation_(pixel_count), pixels_(pixel_count) {}
+Raytracer::Raytracer() : accumulation_(pixel_count), pixels_(pixel_count) {}
 
-void Renderer::render_pass() {
+void Raytracer::render_pass() {
     for (int y = 0; y < config::window_height; ++y) {
         for (int x = 0; x < config::window_width; ++x) {
             const double offset_u = rng_.uniform() - 0.5;
@@ -163,6 +163,6 @@ void Renderer::render_pass() {
     }
 }
 
-const std::vector<std::uint32_t> &Renderer::pixels() const {
+const std::vector<std::uint32_t> &Raytracer::pixels() const {
     return pixels_;
 }

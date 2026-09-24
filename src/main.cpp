@@ -1,6 +1,7 @@
 #define SDL_MAIN_HANDLED
 
 #include <cstdint>
+#include <exception>
 #include <print>
 #include <vector>
 
@@ -11,23 +12,29 @@ import engine;
 
 using namespace config;
 
-int main() {
-    SDL_Init(SDL_INIT_VIDEO);
+static int run() {
+    const sdl3::Context context{SDL_INIT_VIDEO};
 
-    const sdl3::Window window{"kray", window_width, window_height, 0};
+    const sdl3::Window window{
+        "kray",
+        window_width,
+        window_height,
+        0,
+    };
 
-    const sdl3::Renderer sdl_renderer{window.get(), nullptr};
+    const sdl3::Renderer renderer{window.get(), nullptr};
 
-    const sdl3::Texture texture{sdl_renderer.get(),
-                                SDL_PIXELFORMAT_RGBA8888,
-                                SDL_TEXTUREACCESS_STREAMING,
-                                window_width,
-                                window_height};
+    const sdl3::Texture texture{
+        renderer.get(),
+        SDL_PIXELFORMAT_RGBA8888,
+        SDL_TEXTUREACCESS_STREAMING,
+        window_width,
+        window_height,
+    };
 
-    Renderer renderer;
+    Raytracer raytracer;
 
     int remaining = samples_per_pixel;
-
     bool running = true;
     bool done = false;
 
@@ -47,28 +54,37 @@ int main() {
         if (remaining > 0) {
             std::println("Remaining: {}", remaining);
 
-            renderer.render_pass();
+            raytracer.render_pass();
 
-            const std::vector<std::uint32_t> &pixels = renderer.pixels();
+            const auto &pixels = raytracer.pixels();
 
-            SDL_UpdateTexture(
-                texture.get(), nullptr, pixels.data(), window_width * sizeof(std::uint32_t));
+            if (auto result =
+                    texture.update(nullptr, pixels.data(), window_width * sizeof(std::uint32_t));
+                !result) {
+                std::println(stderr, "Texture update failed: {}", result.error());
+                return 1;
+            }
 
             --remaining;
         } else if (!done) {
             done = true;
-
-            std::println("done");
+            std::println("Done.");
         }
 
-        SDL_RenderClear(sdl_renderer.get());
-
-        SDL_RenderTexture(sdl_renderer.get(), texture.get(), nullptr, nullptr);
-
-        SDL_RenderPresent(sdl_renderer.get());
+        if (auto result = renderer.present(texture.get(), nullptr, nullptr); !result) {
+            std::println(stderr, "Present failed: {}", result.error());
+            return 1;
+        }
     }
 
-    SDL_Quit();
-
     return 0;
+}
+
+int main() {
+    try {
+        run();
+    } catch (const std::exception &error) {
+        std::println(stderr, "Fatal: {}", error.what());
+        return 1;
+    }
 }

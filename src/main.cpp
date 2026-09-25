@@ -1,6 +1,5 @@
 #define SDL_MAIN_HANDLED
 
-#include <cstdint>
 #include <exception>
 #include <print>
 #include <vector>

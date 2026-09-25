@@ -10,8 +10,8 @@ export import :hit_record;
 export import :sphere;
 
 export [[nodiscard]]
-std::optional<HitRecord> hit(std::span<const Sphere> world, const Ray &ray, double t_min,
-                             double t_max) {
+std::optional<HitRecord> hit(const std::span<const Sphere> world, const Ray &ray,
+                             const double t_min, const double t_max) {
     std::optional<HitRecord> closest_hit;
 
     double closest_t = t_max;

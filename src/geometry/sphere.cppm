@@ -15,7 +15,8 @@ export struct Sphere {
 };
 
 export [[nodiscard]]
-std::optional<HitRecord> hit(const Sphere &sphere, const Ray &ray, double t_min, double t_max) {
+std::optional<HitRecord> hit(const Sphere &sphere, const Ray &ray, const double t_min,
+                             const double t_max) {
     const Vec3 oc = ray.origin() - sphere.center;
 
     const double a = dot(ray.direction(), ray.direction());

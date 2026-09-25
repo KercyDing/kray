@@ -1,5 +1,6 @@
 #define SDL_MAIN_HANDLED
 
+#include <chrono>
 #include <exception>
 #include <print>
 #include <vector>
@@ -37,6 +38,8 @@ static int run() {
     bool running = true;
     bool done = false;
 
+    auto start = std::chrono::steady_clock::now();
+
     while (running) {
         SDL_Event event;
 
@@ -67,7 +70,12 @@ static int run() {
             --remaining;
         } else if (!done) {
             done = true;
-            std::println("Done.");
+
+            auto end = std::chrono::steady_clock::now();
+
+            auto elapsed = std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
+
+            std::println("Done.\nTime: {}", elapsed);
         }
 
         if (auto result = renderer.present(texture.get(), nullptr, nullptr); !result) {

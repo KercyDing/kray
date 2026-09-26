@@ -17,7 +17,7 @@ public:
         return direction_;
     }
 
-    [[nodiscard]] constexpr Point3 at(double t) const {
+    [[nodiscard]] constexpr Point3 at(const double t) const {
         return origin_ + t * direction_;
     }
 

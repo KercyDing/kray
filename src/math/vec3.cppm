@@ -146,5 +146,10 @@ Vec3 random_unit_vector(Rng &rng) {
     }
 }
 
+export [[nodiscard]]
+Vec3 reflect(const Vec3 &v, const Vec3 &n) {
+    return v - 2.0 * dot(v, n) * n;
+}
+
 export using Point3 = Vec3;
 export using Color = Vec3;

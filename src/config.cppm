@@ -16,5 +16,5 @@ export namespace config {
     constexpr Point3 camera_center{0.0, 0.0, 0.0};
 
     constexpr int max_depth = 16;
-    constexpr int samples_per_pixel = 64;
+    constexpr int samples_per_pixel = 256;
 }; // namespace config

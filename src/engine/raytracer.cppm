@@ -5,7 +5,9 @@ module;
 #include <cmath>
 #include <cstdint>
 #include <limits>
+#include <ranges>
 #include <span>
+#include <utility>
 #include <vector>
 
 export module engine:raytracer;
@@ -35,16 +37,52 @@ public:
     [[nodiscard]] const std::vector<std::uint32_t> &pixels() const;
 
 private:
-    std::array<Sphere, 2> world_{
-        Sphere{
-            .center = Point3{0.0, 0.0, -1.0},
-            .radius = 0.5,
-            .albedo = Color{0.9, 0.6, 0.6},
-        },
+    std::array<Sphere, 4> world_{
+        // Ground
         Sphere{
             .center = Point3{0.0, -100.5, -1.0},
             .radius = 100.0,
-            .albedo = Color{0.8, 0.8, 0.3},
+            .material =
+                Material{
+                    .type = lambertian,
+                    .albedo = Color{0.8, 0.8, 0.1},
+                    .fuzz = 0.0,
+                },
+        },
+        // Red - back
+        Sphere{
+            .center = Point3{0.0, -0.1, -1.6},
+            .radius = 0.4,
+            .material =
+                Material{
+                    .type = metal,
+                    .albedo = Color{0.9, 0.6, 0.6},
+                    .fuzz = 0.1,
+                },
+        },
+
+        // Green - front left
+        Sphere{
+            .center = Point3{-0.55, -0.1, -1.0},
+            .radius = 0.4,
+            .material =
+                Material{
+                    .type = metal,
+                    .albedo = Color{0.6, 0.9, 0.6},
+                    .fuzz = 0.1,
+                },
+        },
+
+        // Blue - front right
+        Sphere{
+            .center = Point3{0.55, -0.1, -1.0},
+            .radius = 0.4,
+            .material =
+                Material{
+                    .type = metal,
+                    .albedo = Color{0.6, 0.6, 0.9},
+                    .fuzz = 0.1,
+                },
         },
     };
 
@@ -96,14 +134,36 @@ namespace {
         }
 
         if (const auto record = hit(world, ray, 0.001, std::numeric_limits<double>::infinity())) {
-            const Vec3 scatter_direction = record->normal + random_unit_vector(rng);
+            const auto scatter_direction = [&]() -> std::optional<Vec3> {
+                switch (record->material.type) {
+                    case lambertian:
+                        return record->normal + random_unit_vector(rng);
+
+                    case metal: {
+                        const Vec3 direction = reflect(unit_vector(ray.direction()), record->normal)
+                                               + record->material.fuzz * random_unit_vector(rng);
+
+                        if (dot(direction, record->normal) <= 0.0) {
+                            return std::nullopt;
+                        }
+
+                        return direction;
+                    }
+                }
+
+                std::unreachable();
+            }();
+
+            if (!scatter_direction) {
+                return Color{0.0, 0.0, 0.0};
+            }
 
             const Ray scattered{
                 record->point,
-                scatter_direction,
+                *scatter_direction,
             };
 
-            return record->albedo * ray_color(scattered, world, depth - 1, rng);
+            return record->material.albedo * ray_color(scattered, world, depth - 1, rng);
         }
 
         const Vec3 direction = unit_vector(ray.direction());
@@ -158,8 +218,8 @@ void Raytracer::render_pass() {
 
     const double scale = 1.0 / samples_done_;
 
-    for (std::size_t i = 0; i < pixels_.size(); ++i) {
-        pixels_[i] = pack_color(scale * accumulation_[i]);
+    for (auto &&[pixel, color] : std::views::zip(pixels_, accumulation_)) {
+        pixel = pack_color(scale * color);
     }
 }
 

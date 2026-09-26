@@ -2,10 +2,21 @@ export module geometry:hit_record;
 
 export import math;
 
+export enum MaterialType {
+    lambertian,
+    metal,
+};
+
+export struct Material {
+    MaterialType type{};
+    Color albedo{};
+    double fuzz{};
+};
+
 export struct HitRecord {
     Point3 point{};
     Vec3 normal{};
-    Color albedo{};
+    Material material{};
     double t{};
     bool front_face{};
 

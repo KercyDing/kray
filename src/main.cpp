@@ -38,7 +38,7 @@ static int run() {
     bool running = true;
     bool done = false;
 
-    auto start = std::chrono::steady_clock::now();
+    const auto start = std::chrono::steady_clock::now();
 
     while (running) {
         SDL_Event event;
@@ -71,9 +71,9 @@ static int run() {
         } else if (!done) {
             done = true;
 
-            auto end = std::chrono::steady_clock::now();
+            const auto end = std::chrono::steady_clock::now();
 
-            auto elapsed = std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
+            const auto elapsed = std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
 
             std::println("Done.\nTime: {}", elapsed);
         }

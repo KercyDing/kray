@@ -4,7 +4,7 @@ module;
 
 export module math:vec3;
 
-export import :random;
+import :random;
 
 export class Vec3 {
 public:
@@ -149,6 +149,17 @@ Vec3 random_unit_vector(Rng &rng) {
 export [[nodiscard]]
 Vec3 reflect(const Vec3 &v, const Vec3 &n) {
     return v - 2.0 * dot(v, n) * n;
+}
+
+export [[nodiscard]]
+Vec3 refract(const Vec3 &uv, const Vec3 &n, const double eta_ratio) {
+    const double cos_theta = std::min(dot(-uv, n), 1.0);
+
+    const Vec3 r_out_perp = eta_ratio * (uv + cos_theta * n);
+
+    const Vec3 r_out_parallel = -std::sqrt(std::fabs(1.0 - r_out_perp.length_squared())) * n;
+
+    return r_out_perp + r_out_parallel;
 }
 
 export using Point3 = Vec3;

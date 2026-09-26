@@ -4,10 +4,8 @@ module;
 #include <array>
 #include <cmath>
 #include <cstdint>
-#include <limits>
 #include <ranges>
 #include <span>
-#include <utility>
 #include <vector>
 
 export module engine:raytracer;
@@ -15,6 +13,10 @@ export module engine:raytracer;
 import config;
 import math;
 import geometry;
+
+import :scatter;
+
+using namespace config;
 
 export class Camera {
 public:
@@ -55,7 +57,7 @@ private:
             .radius = 0.4,
             .material =
                 Material{
-                    .type = metal,
+                    .type = lambertian,
                     .albedo = Color{0.9, 0.6, 0.6},
                     .fuzz = 0.1,
                 },
@@ -67,7 +69,7 @@ private:
             .radius = 0.4,
             .material =
                 Material{
-                    .type = metal,
+                    .type = conductor,
                     .albedo = Color{0.6, 0.9, 0.6},
                     .fuzz = 0.1,
                 },
@@ -79,9 +81,9 @@ private:
             .radius = 0.4,
             .material =
                 Material{
-                    .type = metal,
-                    .albedo = Color{0.6, 0.6, 0.9},
-                    .fuzz = 0.1,
+                    .type = dielectric,
+                    .albedo = Color{0.6, 0.6, 5.0},
+                    .ior = 1.05,
                 },
         },
     };
@@ -98,11 +100,11 @@ private:
 
 namespace {
 
-    constexpr std::size_t pixel_count = config::window_width * config::window_height;
+    constexpr std::size_t pixel_count = window_width * window_height;
 
     [[nodiscard]]
     std::size_t index(const int x, const int y) {
-        return static_cast<std::size_t>(y) * config::window_width + x;
+        return static_cast<std::size_t>(y) * window_width + x;
     }
 
     [[nodiscard]]
@@ -133,37 +135,14 @@ namespace {
             return Color{0.0, 0.0, 0.0};
         }
 
-        if (const auto record = hit(world, ray, 0.001, std::numeric_limits<double>::infinity())) {
-            const auto scatter_direction = [&]() -> std::optional<Vec3> {
-                switch (record->material.type) {
-                    case lambertian:
-                        return record->normal + random_unit_vector(rng);
+        if (const auto record = hit(world, ray, 0.001, infinity)) {
+            const auto result = scatter(ray, *record, rng);
 
-                    case metal: {
-                        const Vec3 direction = reflect(unit_vector(ray.direction()), record->normal)
-                                               + record->material.fuzz * random_unit_vector(rng);
-
-                        if (dot(direction, record->normal) <= 0.0) {
-                            return std::nullopt;
-                        }
-
-                        return direction;
-                    }
-                }
-
-                std::unreachable();
-            }();
-
-            if (!scatter_direction) {
+            if (!result) {
                 return Color{0.0, 0.0, 0.0};
             }
 
-            const Ray scattered{
-                record->point,
-                *scatter_direction,
-            };
-
-            return record->material.albedo * ray_color(scattered, world, depth - 1, rng);
+            return result->attenuation * ray_color(result->ray, world, depth - 1, rng);
         }
 
         const Vec3 direction = unit_vector(ray.direction());
@@ -176,17 +155,16 @@ namespace {
 } // namespace
 
 Camera::Camera() {
-    constexpr Vec3 viewport_u{config::viewport_width, 0.0, 0.0};
+    constexpr Vec3 viewport_u{viewport_width, 0.0, 0.0};
 
-    constexpr Vec3 viewport_v{0.0, -config::viewport_height, 0.0};
+    constexpr Vec3 viewport_v{0.0, -viewport_height, 0.0};
 
-    pixel_delta_u_ = viewport_u / config::window_width;
+    pixel_delta_u_ = viewport_u / window_width;
 
-    pixel_delta_v_ = viewport_v / config::window_height;
+    pixel_delta_v_ = viewport_v / window_height;
 
-    constexpr Point3 viewport_upper_left = config::camera_center
-                                           - Vec3{0.0, 0.0, config::focal_length} - viewport_u / 2.0
-                                           - viewport_v / 2.0;
+    constexpr Point3 viewport_upper_left =
+        camera_center - Vec3{0.0, 0.0, focal_length} - viewport_u / 2.0 - viewport_v / 2.0;
 
     pixel00_ = viewport_upper_left + 0.5 * (pixel_delta_u_ + pixel_delta_v_);
 }
@@ -197,20 +175,20 @@ Ray Camera::ray(const int x, const int y, const double offset_u, const double of
     const Point3 pixel_sample =
         pixel_center + offset_u * pixel_delta_u_ + offset_v * pixel_delta_v_;
 
-    return Ray{config::camera_center, pixel_sample - config::camera_center};
+    return Ray{camera_center, pixel_sample - camera_center};
 }
 
 Raytracer::Raytracer() : accumulation_(pixel_count), pixels_(pixel_count) {}
 
 void Raytracer::render_pass() {
-    for (int y = 0; y < config::window_height; ++y) {
-        for (int x = 0; x < config::window_width; ++x) {
+    for (int y = 0; y < window_height; ++y) {
+        for (int x = 0; x < window_width; ++x) {
             const double offset_u = rng_.uniform() - 0.5;
             const double offset_v = rng_.uniform() - 0.5;
 
             const Ray ray = camera_.ray(x, y, offset_u, offset_v);
 
-            accumulation_[index(x, y)] += ray_color(ray, world_, config::max_depth, rng_);
+            accumulation_[index(x, y)] += ray_color(ray, world_, max_depth, rng_);
         }
     }
 

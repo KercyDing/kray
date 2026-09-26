@@ -5,9 +5,10 @@ module;
 
 export module geometry:world;
 
-export import math;
-export import :hit_record;
-export import :sphere;
+import math;
+
+import :hit_record;
+import :sphere;
 
 export [[nodiscard]]
 std::optional<HitRecord> hit(const std::span<const Sphere> world, const Ray &ray,

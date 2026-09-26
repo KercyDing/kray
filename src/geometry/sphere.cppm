@@ -5,8 +5,9 @@ module;
 
 export module geometry:sphere;
 
-export import math;
-export import :hit_record;
+import math;
+
+import :hit_record;
 
 export struct Sphere {
     Point3 center{};

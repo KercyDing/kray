@@ -1,17 +1,8 @@
 export module geometry:hit_record;
 
-export import math;
+import math;
 
-export enum MaterialType {
-    lambertian,
-    metal,
-};
-
-export struct Material {
-    MaterialType type{};
-    Color albedo{};
-    double fuzz{};
-};
+import :material;
 
 export struct HitRecord {
     Point3 point{};

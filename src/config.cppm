@@ -1,6 +1,10 @@
+module;
+
+#include <limits>
+
 export module config;
 
-export import math;
+import math;
 
 export namespace config {
     // ppm size
@@ -17,4 +21,6 @@ export namespace config {
 
     constexpr int max_depth = 16;
     constexpr int samples_per_pixel = 256;
+
+    constexpr double infinity = std::numeric_limits<double>::infinity();
 }; // namespace config

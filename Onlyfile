@@ -32,37 +32,37 @@ build-release(preset = "msvc") ? @os("windows"):
 
 [help] Run the built program.
 [fail] Program failed.
-run(preset = "gcc") ? @os("linux"):
+run(preset = "gcc", samples = "64") ? @os("linux"):
     cmake --preset {{preset}}
     cmake --build --preset {{preset}}
-    ./build/{{preset}}/Debug/kray
+    ./build/{{preset}}/Debug/kray --samples {{samples}}
 
-run(preset = "clang") ? @os("macos"):
+run(preset = "clang", samples = "64") ? @os("macos"):
     cmake --preset {{preset}}
     cmake --build --preset {{preset}}
-    ./build/{{preset}}/Debug/kray
+    ./build/{{preset}}/Debug/kray --samples {{samples}}
 
-run(preset = "msvc") ? @os("windows") shell~=pwsh:
+run(preset = "msvc", samples = "64") ? @os("windows") shell~=pwsh:
     cmake --preset {{preset}}
     cmake --build --preset {{preset}}
-    build/{{preset}}/Debug/kray.exe
+    build/{{preset}}/Debug/kray.exe --samples {{samples}}
 
 [help] Run the release build.
 [fail] Program failed.
-run-release(preset = "gcc") ? @os("linux"):
+run-release(preset = "gcc", samples = "512") ? @os("linux"):
     cmake --preset {{preset}}
     cmake --build --preset {{preset}}-release
-    ./build/{{preset}}/Release/kray
+    ./build/{{preset}}/Release/kray --samples {{samples}}
 
-run-release(preset = "clang") ? @os("macos"):
+run-release(preset = "clang", samples = "512") ? @os("macos"):
     cmake --preset {{preset}}
     cmake --build --preset {{preset}}-release
-    ./build/{{preset}}/Release/kray
+    ./build/{{preset}}/Release/kray --samples {{samples}}
 
-run-release(preset = "msvc") ? @os("windows") shell~=pwsh:
+run-release(preset = "msvc", samples = "512") ? @os("windows") shell~=pwsh:
     cmake --preset {{preset}}
     cmake --build --preset {{preset}}-release
-    build/{{preset}}/Release/kray.exe
+    build/{{preset}}/Release/kray.exe --samples {{samples}}
 
 [help] Format files with clang-format.
 [pass] Formatting complete.

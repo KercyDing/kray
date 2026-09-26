@@ -20,7 +20,7 @@ export namespace config {
     constexpr Point3 camera_center{0.0, 0.0, 0.0};
 
     constexpr int max_depth = 16;
-    constexpr int samples_per_pixel = 256;
+    constexpr int default_samples_per_pixel = 64;
 
     constexpr double infinity = std::numeric_limits<double>::infinity();
 }; // namespace config

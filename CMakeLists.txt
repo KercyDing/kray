@@ -11,6 +11,10 @@ add_executable(kray ${PROJECT_SOURCES})
 
 target_link_libraries(kray PRIVATE SDL3::SDL3)
 
+if(MINGW)
+    target_link_libraries(kray PRIVATE stdc++exp)
+endif()
+
 target_sources(
     kray
     PRIVATE
